@@ -14,13 +14,23 @@ def vec_math_ops():
     seed0 = random.random()
     random.seed(seed0)
     print("Using seed %r" % seed0)
-
+    badDataTan = [-math.pi/2, math.pi/2, -math.pi*1.5, math.pi*1.5, -math.pi*2.5, math.pi*2.5]  # tan value can blow up near this values
     sin_cos_tan_atan_sinh_cosh_tanh_asinh_data = [[random.uniform(-10,10) for r in range(10)] for c in range(10)]
+    # check to make sure random data do not have arguments near bad values for tan.
+    # If there are, replace them with safe values.  This is the cause of intermittent failures
+    for col_ind in range(10):
+        for row_ind in range(10):
+            diff = np.array(badDataTan)-\
+                   np.array([sin_cos_tan_atan_sinh_cosh_tanh_asinh_data[col_ind][row_ind]]*len(badDataTan))
+            if min(abs(diff)) < 1e-2:   # replace data too close to +/-pi/2, +/-3pi/2, +/-5pi/2
+                sin_cos_tan_atan_sinh_cosh_tanh_asinh_data[col_ind][row_ind] = random.uniform(-1,1)
+
     asin_acos_atanh_data = [[random.uniform(-1,1) for r in range(10)] for c in range(10)]
     acosh_data = [[random.uniform(1,10) for r in range(10)] for c in range(10)]
     abs_data = [[random.uniform(-100000,0) for r in range(10)] for c in range(10)]
     zero_one_data = [random.randint(0,1) for c in range(10)]
     zero_one_data = [zero_one_data, zero_one_data]
+
 
     h2o_data1 = h2o.H2OFrame(sin_cos_tan_atan_sinh_cosh_tanh_asinh_data)
     h2o_data2 = h2o.H2OFrame(asin_acos_atanh_data)
@@ -31,8 +41,6 @@ def vec_math_ops():
     np_data1 = np.array(sin_cos_tan_atan_sinh_cosh_tanh_asinh_data)
     np_data2 = np.array(asin_acos_atanh_data)
     np_data3 = np.array(acosh_data)
-    np_data4 = np.array(abs_data)
-    np_data5 = np.array(zero_one_data)
 
     row, col = h2o_data1.dim
 
