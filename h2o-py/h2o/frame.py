@@ -2074,6 +2074,23 @@ class H2OFrame(object):
         return H2OFrame._expr(expr=ExprNode("cor", self, y, use))._frame()
 
 
+    def distance(self, y, metric=None):
+        """
+        Compute the correlation matrix of one or two H2OFrames.
+
+        :param H2OFrame y: Queries frame.
+        :param str use: A string indicating what distance metric to use.
+
+            - ``"euclidean"``: Euclidean distance
+            - ``"cosine"``: Cosine similarity
+
+        :returns: An H2OFrame of the matrix containing pairwise distances between the rows of this frame and ``y``.
+        """
+        assert_is_type(y, H2OFrame, None)
+        assert_is_type(metric, None, "cosine", "euclidean")
+        return H2OFrame._expr(expr=ExprNode("distance", self, y, metric))._frame()
+
+
     def asfactor(self):
         """
         Convert columns in the current frame to categoricals.

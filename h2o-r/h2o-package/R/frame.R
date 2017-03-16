@@ -2312,6 +2312,31 @@ h2o.cor <- function(x, y=NULL,na.rm = FALSE, use){
   else .fetch.data(expr,ncol(x))
 }
 
+#'
+#' Distance between two matrices.
+#'
+#' Compute the pairwise distance between all rows of two H2OFrames.
+#'
+#' @param x An H2OFrame object (large, references).
+#' @param y An H2OFrame object (small, queries).
+#' @param metric An optional character string indicating what distance metric to use. This must be one of the following:
+#'   "euclidean"            - Euclidean distance
+#'   "cosine"               - Cosine similarity
+#' @examples
+#' \donttest{
+#' h2o.init()
+#' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
+#' prostate.hex <- h2o.uploadFile(path = prosPath)
+#' distance(prostate.hex, prostate.hex[1,], "cosine")
+#' }
+#' @export
+h2o.distance <- function(x, y, metric){
+  if(missing(metric)) {
+    metric <- "euclidean"
+  }
+  .newExpr("distance",x,y,.quote(metric))
+}
+
 #' @rdname h2o.cor
 #' @param ... Further arguments to be passed down from other methods.
 #' @export
