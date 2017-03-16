@@ -71,14 +71,16 @@ def random_grid_model_seeds_PUBDEV_4090():
     # check model seeds are set as gridseed+model number where model number = 0, 1, ..., ...
     model_len = min(len(air_grid1), len(air_grid2))
     correct_model_seeds = list(range(search_criteria_tune1["seed"], search_criteria_tune1["seed"]+model_len))
-    assert model_seeds1[0:model_len]==model_seeds2[0:model_len], "Random gridsearch seed is not set correctly as model seeds..."
-    assert model_seeds1==correct_model_seeds, "Random gridsearch seed is not "
+    assert model_seeds1[0:model_len]==model_seeds2[0:model_len], "Random gridsearch seed is not used correctly to " \
+                                                                 "set the models seeds..."
+    assert model_seeds1[0:model_len]==correct_model_seeds, "Random gridsearch seed is not used correctly to " \
+                                                           "set the models seeds..."
 
     # compare training_rmse from scoring history
     metric_list1 = pyunit_utils.extract_scoring_history_field(air_grid1.models[0], "training_rmse")
     metric_list2 = pyunit_utils.extract_scoring_history_field(air_grid2.models[0], "training_rmse")
     assert pyunit_utils.equal_two_arrays(metric_list1[0:model_len], metric_list2[0:model_len], 1e-5, 1e-6, False), \
-        "Random gridsearch seed is not set correctly as model seeds..."
+        "Random gridsearch seed is not used correctly to set the models seeds..."
 
 
 if __name__ == "__main__":
